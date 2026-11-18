@@ -1,7 +1,8 @@
 package com.backend.ms_roles.dto;
 
-import com.backend.ms_roles.model.Rol;
+import lombok.Data;
 
+@Data 
 public class UsuarioResponse {
 
     private Long id;
@@ -9,6 +10,7 @@ public class UsuarioResponse {
     private String correo;
     private String rut;
     private String telefono;
-    private Rol rol;
+    private String rol;
     private boolean activo;
+    private String claveTemporal;
 }
