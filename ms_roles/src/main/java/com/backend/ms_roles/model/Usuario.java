@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -51,11 +50,13 @@ public class Usuario {
     @Column(nullable = true)
     private String contactoCargo;
 
+    @Builder .Default
     @Column(nullable = false)
-    private boolean activo = true;
+    private Boolean activo = true;
 
+    @Builder .Default
     @Column(nullable = false)
-    private boolean cambiarClave = true;
+    private Boolean cambiarClave = true;
 
     @ManyToOne
     private Rol rol;
