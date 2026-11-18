@@ -1,10 +1,12 @@
 package com.backend.ms_roles.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.backend.ms_roles.dto.CambiarClaveRequest;
 import com.backend.ms_roles.dto.CrearUsuariosRequest;
 import com.backend.ms_roles.dto.LoginRequest;
 import com.backend.ms_roles.dto.LoginResponse;
@@ -131,4 +133,72 @@ public class UsuarioServices {
         List<UsuarioResponse> usuario = usuarioRepository.findAll().stream().map(this::mapToDTOcreaResponse).toList();
         return usuario;
     }
+
+    public UsuarioResponse obtenerPerfil(Long id) {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (usuario.isEmpty()) {
+            throw new RuntimeException("El usuario no existe");
+        }
+        Usuario usuarioEncontrado = usuario.get();
+        return mapToDTOcreaResponse(usuarioEncontrado);
+    }
+
+    public UsuarioResponse cambiarEstado(Long id) {
+
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (usuario.isEmpty()) {
+            throw new RuntimeException("El usuario a desactivar no existe");
+        }
+
+        Usuario usuarioCambia = usuario.get();
+        usuarioCambia.setActivo(!usuarioCambia.getActivo());
+
+        Usuario usuarioCambiado = usuarioRepository.save(usuarioCambia);
+        return mapToDTOcreaResponse(usuarioCambiado);
+    }
+
+    public void cambiarClave(Long id, CambiarClaveRequest request) {
+
+        Optional<Usuario> buscarUsuario = usuarioRepository.findById(id);
+
+        if (buscarUsuario.isEmpty()) {
+            throw new RuntimeException("El Usuario no exite");
+        }
+
+        Usuario usuarioEcontrado = buscarUsuario.get();
+
+        // verificamos que la contraseña sea no igual
+        if (passwordEncoder.matches(request.getClaveNueva(), usuarioEcontrado.getPassword())) {
+            throw new RuntimeException("La contraseña no debe ser igual al anterior");
+        }
+        if (request.getClaveNueva().length() < 8 || request.getClaveNueva().length() > 12) {
+            throw new RuntimeException("La contraseña debe tener un largo de 8 a 12 caracteres");
+        }
+        if (request.getClaveNueva() == null || request.getClaveNueva().isBlank()) {
+            throw new RuntimeException("La contraseña es obligatoria");
+        }
+        if (!request.getClaveNueva().matches(".*[A-Z].*")) {
+            throw new RuntimeException("La contraseña debe contener al menos una letra en mayúscula");
+        }
+        if (!request.getClaveNueva().matches(".*[.-].*")) {
+            throw new RuntimeException("La contraseña debe contener al menos un punto ( . ) o guion ( - )");
+        }
+
+        usuarioEcontrado.setPassword(passwordEncoder.encode(request.getClaveNueva()));
+        usuarioEcontrado.setCambiarClave(false);
+
+        usuarioRepository.save(usuarioEcontrado);
+    }
+
+    /*             PEDIENTE*
+
+     * public UsuarioResponse recuperarClave(RecuperarClaveRequest
+     * recuperarClaveRequest) {
+     * 
+     * String identificador = recuperarClaveRequest.getIdentificador();
+     * Optional<Usuario> buscar = findByRutOrCorreo(identificador, identificador);
+     * 
+     * }
+     */
+
 }
