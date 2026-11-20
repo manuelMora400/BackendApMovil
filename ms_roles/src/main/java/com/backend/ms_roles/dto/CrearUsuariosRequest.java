@@ -1,6 +1,6 @@
 package com.backend.ms_roles.dto;
 
-import com.backend.ms_roles.model.Rol;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
