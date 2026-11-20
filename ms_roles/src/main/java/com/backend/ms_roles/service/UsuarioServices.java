@@ -2,15 +2,10 @@ package com.backend.ms_roles.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.backend.ms_roles.dto.CambiarClaveRequest;
-import com.backend.ms_roles.dto.CrearUsuariosRequest;
-import com.backend.ms_roles.dto.LoginRequest;
-import com.backend.ms_roles.dto.LoginResponse;
-import com.backend.ms_roles.dto.UsuarioResponse;
+import com.backend.ms_roles.dto.*;
+import com.backend.ms_roles.exception.*;
 import com.backend.ms_roles.model.Rol;
 import com.backend.ms_roles.model.Usuario;
 import com.backend.ms_roles.repository.RolRepository;
@@ -58,14 +53,14 @@ public class UsuarioServices {
     public LoginResponse login(LoginRequest request) {
 
         Usuario usuarioEcontrado = usuarioRepository.findByCorreo(request.getCorreo())
-                .orElseThrow(() -> new RuntimeException("Credenciaes Invalidas"));
+                .orElseThrow(() -> new CredencialesInvalidasException("Credenciaes Invalidas"));
         if (!usuarioEcontrado.getActivo()) {
-            throw new RuntimeException("Credenciales invalidas");
+            throw new CredencialesInvalidasException("Credenciales invalidas");
         }
 
         // verificar si la clave script vs la escrita coincidan
         if (!passwordEncoder.matches(request.getPassword(), usuarioEcontrado.getPassword())) {
-            throw new RuntimeException("Credenciales Invalidas");
+            throw new CredencialesInvalidasException("Credenciales Invalidas");
         }
         return mapToDTO(usuarioEcontrado);
     }
@@ -77,28 +72,28 @@ public class UsuarioServices {
 
             // validacion de giro (Solo clientes)
             if (request.getGiro() == null || request.getGiro().isBlank()) {
-                throw new RuntimeException("El giro para Cliente es obligatorio");
+                throw new ReglasNegocioException("El giro para Cliente es obligatorio");
             } else if (request.getGiro().length() < 10 || request.getGiro().length() > 80) {
-                throw new RuntimeException("El giro tiene que estar entre 10 a 80 caracteres");
+                throw new ReglasNegocioException("El giro tiene que estar entre 10 a 80 caracteres");
             }
 
             // validacion contacto cargo solo cliente
             if (request.getContactoCargo() == null || request.getContactoCargo().isBlank()) {
-                throw new RuntimeException("El catacto cargo para Cliente es obligatorio");
+                throw new ReglasNegocioException("El catacto cargo para Cliente es obligatorio");
             }
         }
         // salimos de la condicion cliente
 
         // rut o correo si existe
         if (usuarioRepository.existsByCorreo(request.getCorreo().trim())) {
-            throw new RuntimeException("El correo ya existe en el sistema");
+            throw new DuplicadosException("El correo ya existe en el sistema");
         } else if (usuarioRepository.existsByRut(request.getRut().trim())) {
-            throw new RuntimeException("El rut ya existe en el sistema");
+            throw new DuplicadosException("El rut ya existe en el sistema");
         }
 
         // validamos rol
         Rol rolEcontrado = rolRepository.findByNombre(request.getRol().trim().toUpperCase())
-                .orElseThrow(() -> new RuntimeException("Rol no existente"));
+                .orElseThrow(() -> new NoEncontradoException("Rol no existente"));
 
         // generamos clave
         String claveTemporal = GeneradorClaveTemporal.generarClave();
@@ -136,8 +131,8 @@ public class UsuarioServices {
 
     public UsuarioResponse obtenerPerfil(Long id) {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
-        if (usuario.isEmpty()) {
-            throw new RuntimeException("El usuario no existe");
+        if (usuario == null || usuario.isEmpty()) {
+            throw new NoEncontradoException("El usuario no existe");
         }
         Usuario usuarioEncontrado = usuario.get();
         return mapToDTOcreaResponse(usuarioEncontrado);
@@ -146,8 +141,8 @@ public class UsuarioServices {
     public UsuarioResponse cambiarEstado(Long id) {
 
         Optional<Usuario> usuario = usuarioRepository.findById(id);
-        if (usuario.isEmpty()) {
-            throw new RuntimeException("El usuario a desactivar no existe");
+        if (usuario == null || usuario.isEmpty()) {
+            throw new NoEncontradoException("El usuario a desactivar no existe");
         }
 
         Usuario usuarioCambia = usuario.get();
@@ -161,27 +156,27 @@ public class UsuarioServices {
 
         Optional<Usuario> buscarUsuario = usuarioRepository.findById(id);
 
-        if (buscarUsuario.isEmpty()) {
-            throw new RuntimeException("El Usuario no exite");
+        if (buscarUsuario == null || buscarUsuario.isEmpty()) {
+            throw new NoEncontradoException("El Usuario no exite");
         }
 
         Usuario usuarioEcontrado = buscarUsuario.get();
 
         // verificamos que la contraseña sea no igual
         if (passwordEncoder.matches(request.getClaveNueva(), usuarioEcontrado.getPassword())) {
-            throw new RuntimeException("La contraseña no debe ser igual al anterior");
+            throw new ReglasNegocioException("La contraseña no debe ser igual al anterior");
         }
         if (request.getClaveNueva().length() < 8 || request.getClaveNueva().length() > 12) {
-            throw new RuntimeException("La contraseña debe tener un largo de 8 a 12 caracteres");
+            throw new ReglasNegocioException("La contraseña debe tener un largo de 8 a 12 caracteres");
         }
         if (request.getClaveNueva() == null || request.getClaveNueva().isBlank()) {
-            throw new RuntimeException("La contraseña es obligatoria");
+            throw new ReglasNegocioException("La contraseña es obligatoria");
         }
         if (!request.getClaveNueva().matches(".*[A-Z].*")) {
-            throw new RuntimeException("La contraseña debe contener al menos una letra en mayúscula");
+            throw new ReglasNegocioException("La contraseña debe contener al menos una letra en mayúscula");
         }
         if (!request.getClaveNueva().matches(".*[.-].*")) {
-            throw new RuntimeException("La contraseña debe contener al menos un punto ( . ) o guion ( - )");
+            throw new ReglasNegocioException("La contraseña debe contener al menos un punto ( . ) o guion ( - )");
         }
 
         usuarioEcontrado.setPassword(passwordEncoder.encode(request.getClaveNueva()));
@@ -190,15 +185,33 @@ public class UsuarioServices {
         usuarioRepository.save(usuarioEcontrado);
     }
 
-    /*             PEDIENTE*
+    public UsuarioResponse recuperarClave(RecuperarClaveRequest recuperarClaveRequest) {
 
-     * public UsuarioResponse recuperarClave(RecuperarClaveRequest
-     * recuperarClaveRequest) {
-     * 
-     * String identificador = recuperarClaveRequest.getIdentificador();
-     * Optional<Usuario> buscar = findByRutOrCorreo(identificador, identificador);
-     * 
-     * }
-     */
+        String identificador = recuperarClaveRequest.getIdentificador();
+        Optional<Usuario> buscar = usuarioRepository.findByRutOrCorreo(identificador, identificador);
+
+        if (buscar == null || buscar.isEmpty()) {
+            throw new NoEncontradoException("No existe el usuario con ese RUT y correo");
+        }
+
+        Usuario usuario = buscar.get();
+
+        if (!usuario.getActivo()) {
+            throw new NoEncontradoException("El usuario esta inactivo");
+        }
+
+        // generamos clave
+        String claveTemporal = GeneradorClaveTemporal.generarClave();
+        String claveScriptadaTemporal = passwordEncoder.encode(claveTemporal); // La encriptamos
+
+        usuario.setPassword(claveScriptadaTemporal);
+        usuario.setCambiarClave(true); // se habilita que pueda cambiar contraseña
+        UsuarioResponse response = mapToDTOcreaResponse(usuario);
+        response.setClaveTemporal(claveTemporal);
+
+        usuarioRepository.save(usuario);
+
+        return response;
+    }
 
 }
