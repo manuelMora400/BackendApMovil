@@ -19,7 +19,7 @@ public class CargaDatosConfig {
             PasswordEncoder passwordEncoder) {
         return args -> {
             Rol rolAdmin = rolRepository.findById(1L).orElseGet(() -> {
-                Rol r = new Rol(1L, "ADMIN");
+                Rol r = new Rol(1L, "JEFE_TECNICO");
                 return rolRepository.save(r);
             });
 
@@ -33,8 +33,8 @@ public class CargaDatosConfig {
                 Usuario admin = new Usuario();
                 admin.setNombre("Admin Prueba");
                 admin.setRut("11.111.111-1");
-                admin.setCorreo("admin@electric.cl");
-                admin.setPassword(passwordEncoder.encode("Admin.123"));
+                admin.setCorreo("jefe@electric.cl");
+                admin.setPassword(passwordEncoder.encode("Jefe.123"));
                 admin.setRol(rolAdmin);
                 admin.setTelefono("912345678");
                 admin.setActivo(true);
