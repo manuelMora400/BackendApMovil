@@ -38,5 +38,5 @@ public class Calibracion {
     private LocalDate fechaVencimiento;
 
     @ManyToOne // --> Un Instrumento tiene muchas calibraciones
-    private Calibracion instrumento;
+    private Instrumento instrumento;
 }
