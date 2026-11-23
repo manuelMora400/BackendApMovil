@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(erroresResponse);
     }
 
-    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> manejarErrores(
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
