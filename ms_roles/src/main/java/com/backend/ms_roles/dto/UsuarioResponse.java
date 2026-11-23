@@ -28,7 +28,6 @@ public class UsuarioResponse {
     @Schema(description = "Estado de la cuenta", example = "true")
     private boolean activo;
 
-    // nuevo: la pantalla Perfil de la app muestra el cargo (solo clientes; en los demas roles va null)
     @Schema(description = "Giro de la empresa (solo clientes)", example = "Agroindustria")
     private String giro;
 

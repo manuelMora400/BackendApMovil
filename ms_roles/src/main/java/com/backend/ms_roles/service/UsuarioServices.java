@@ -47,7 +47,13 @@ public class UsuarioServices {
         dto.setTelefono(usuario.getTelefono());
         dto.setRol(usuario.getRol().getNombre());
         dto.setActivo(usuario.getActivo());
+        dto.setGiro(usuario.getGiro());
+        dto.setContactoCargo(usuario.getContactoCargo());
         return dto;
+    }
+
+    public ContadorResponse contarActivas() {
+        return new ContadorResponse(usuarioRepository.countByActivo(true));
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -162,7 +168,13 @@ public class UsuarioServices {
 
         Usuario usuarioEcontrado = buscarUsuario.get();
 
-        // verificamos que la contraseña sea no igual
+        if (request.getClaveActual() == null
+                || !passwordEncoder.matches(request.getClaveActual(), usuarioEcontrado.getPassword())) {
+            throw new ReglasNegocioException("La contraseña actual es incorrecta");
+        }
+        if (!request.getClaveNueva().equals(request.getConfirmarClave())) {
+            throw new ReglasNegocioException("La confirmacion de la contraseña no coincide");
+        }
         if (passwordEncoder.matches(request.getClaveNueva(), usuarioEcontrado.getPassword())) {
             throw new ReglasNegocioException("La contraseña no debe ser igual al anterior");
         }
@@ -183,6 +195,24 @@ public class UsuarioServices {
         usuarioEcontrado.setCambiarClave(false);
 
         usuarioRepository.save(usuarioEcontrado);
+    }
+
+    public UsuarioResponse actualizarPerfil(Long id, ActualizarPerfilRequest request) {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NoEncontradoException("El usuario no existe"));
+
+        if (request.getCorreo() != null && !request.getCorreo().isBlank()) {
+            String correoNuevo = request.getCorreo().trim();
+            if (!correoNuevo.equalsIgnoreCase(usuario.getCorreo()) && usuarioRepository.existsByCorreo(correoNuevo)) {
+                throw new DuplicadosException("El correo ya existe en el sistema");
+            }
+            usuario.setCorreo(correoNuevo);
+        }
+        usuario.setNombre(request.getNombre().trim());
+        usuario.setTelefono(request.getTelefono().trim());
+
+        return mapToDTOcreaResponse(usuarioRepository.save(usuario));
     }
 
     public UsuarioResponse recuperarClave(RecuperarClaveRequest recuperarClaveRequest) {

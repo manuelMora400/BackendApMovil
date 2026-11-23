@@ -3,7 +3,9 @@ package com.backend.ms_roles.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.backend.ms_roles.dto.ActualizarPerfilRequest;
 import com.backend.ms_roles.dto.CambiarClaveRequest;
+import com.backend.ms_roles.dto.ContadorResponse;
 import com.backend.ms_roles.dto.CrearUsuariosRequest;
 import com.backend.ms_roles.dto.LoginRequest;
 import com.backend.ms_roles.dto.LoginResponse;
@@ -45,6 +47,12 @@ public class UsuarioController {
         return ResponseEntity.ok(services.listarUsuarios());
     }
 
+
+    @GetMapping("/activos/cantidad")
+    public ResponseEntity<ContadorResponse> cantidadActivas() {
+        return ResponseEntity.ok(services.contarActivas());
+    }
+
     @GetMapping("/obtenerPerfil/{id}")
     public ResponseEntity<UsuarioResponse> obtenerPerfil(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(services.obtenerPerfil(id));
@@ -56,9 +64,14 @@ public class UsuarioController {
     }
 
     @PutMapping("/cambiarClave/{id}")
-    public ResponseEntity<UsuarioResponse> cambiarClave(@Valid @PathVariable Long id,@RequestBody CambiarClaveRequest request) {
+    public ResponseEntity<UsuarioResponse> cambiarClave(@PathVariable Long id, @Valid @RequestBody CambiarClaveRequest request) {
         services.cambiarClave(id, request);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<UsuarioResponse> actualizarPerfil(@PathVariable Long id, @Valid @RequestBody ActualizarPerfilRequest request) {
+        return ResponseEntity.ok(services.actualizarPerfil(id, request));
     }
 
     @PostMapping("/recuperar-clave")

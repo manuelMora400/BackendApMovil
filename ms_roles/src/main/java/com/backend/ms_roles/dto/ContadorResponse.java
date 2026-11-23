@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Igual que ContadorResponse de ms_instrumentos: un solo campo "contador"
-// asi la app usa la misma data class para los 2 contadores del panel Jefe
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
