@@ -70,9 +70,14 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
+
+        String mensaje = ex.getBindingResult().getFieldErrors().isEmpty()
+                ? "Datos invalidos"
+                : ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+
         ErroresReponse reponse = new ErroresReponse(
                 HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
+                mensaje,
                 LocalDateTime.now(),
                 request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(reponse);

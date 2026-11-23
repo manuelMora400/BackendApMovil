@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,14 +29,14 @@ public class Calibracion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "La fecha de calibracion es obligatoria")
+    @NotNull(message = "La fecha de calibracion es obligatoria")
     @Column(nullable = false)
     private LocalDate fechaCalibracion;
 
-    @NotBlank(message = "La fecha de vencimiento es obligatoria")
+    @NotNull(message = "La fecha de vencimiento es obligatoria")
     @Column(nullable = false)
     private LocalDate fechaVencimiento;
 
-    @ManyToOne // --> Un Instrumento tiene muchas calibraciones
+    @ManyToOne
     private Instrumento instrumento;
 }

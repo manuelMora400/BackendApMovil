@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ms.instrumentos.dto.ContadorResponse;
 import com.ms.instrumentos.dto.CrearInstrumentoRequest;
 import com.ms.instrumentos.dto.InstrumentoResponse;
+import com.ms.instrumentos.dto.RenovarCalibracionRequest;
 import com.ms.instrumentos.dto.VigenciaResponse;
 import com.ms.instrumentos.exception.FechaInvalidaExeption;
 import com.ms.instrumentos.exception.NumeroSerieDuplicadoException;
@@ -90,6 +91,39 @@ public class InstrumentoService {
         boolean estaVigente = !calibracion.getFechaVencimiento().isBefore(LocalDate.now());
 
      
+
+        return InstrumentoResponse.builder()
+                .id(instrumento.getId())
+                .nombre(instrumento.getNombre())
+                .marca(instrumento.getMarca())
+                .modelo(instrumento.getModelo())
+                .numeroSerie(instrumento.getNumeroSerie())
+                .fechaCalibracion(calibracion.getFechaCalibracion())
+                .fechaVencimiento(calibracion.getFechaVencimiento())
+                .vigente(estaVigente)
+                .build();
+    }
+
+   
+    @Transactional
+    public InstrumentoResponse renovarCalibracion(String numeroSerie, RenovarCalibracionRequest request) {
+
+        Instrumento instrumento = instrumentoRepository.findByNumeroSerie(numeroSerie.trim())
+                .orElseThrow(() -> new RecursoNoEncontradoException("No existe un instrumento con ese numero de serie"));
+
+   
+        if (!request.getFechaVencimiento().isAfter(request.getFechaCalibracion())) {
+            throw new FechaInvalidaExeption("La fecha de vencimiento debe ser posterior a la fecha de calibracion");
+        }
+
+        Calibracion calibracion = Calibracion.builder()
+                .fechaCalibracion(request.getFechaCalibracion())
+                .fechaVencimiento(request.getFechaVencimiento())
+                .instrumento(instrumento)
+                .build();
+        calibracion = calibracionRepository.save(calibracion);
+
+        boolean estaVigente = !calibracion.getFechaVencimiento().isBefore(LocalDate.now());
 
         return InstrumentoResponse.builder()
                 .id(instrumento.getId())

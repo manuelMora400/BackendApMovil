@@ -1,0 +1,40 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+      
+            - id: ruta-ms-usuarios
+              uri: lb://ms-usuarios
+              predicates:
+                - Path=/api/usuarios,/api/usuarios/**
+
+            - id: ruta-instrumentos
+              uri: lb://instrumentos
+              predicates:
+                - Path=/api/instrumentos,/api/instrumentos/**
+
+            - id: ruta-ms-equipos
+              uri: lb://ms-equipos
+              predicates:
+                - Path=/api/equipos,/api/equipos/**
+
+            - id: ruta-ms-protocolo
+              uri: lb://ms-protocolo
+              predicates:
+                - Path=/api/protocolos,/api/protocolos/**,/api/aislacion,/api/aislacion/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
