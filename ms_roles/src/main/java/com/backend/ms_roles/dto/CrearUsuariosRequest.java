@@ -2,6 +2,7 @@ package com.backend.ms_roles.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -9,14 +10,21 @@ import lombok.Data;
 @Data
 public class CrearUsuariosRequest {
 
+    // formato basico de rut: 7 u 8 numeros (con o sin puntos) + guion + digito verificador (0-9 o k/K)
+    // acepta: 12345678-9 / 12.345.678-K / 1234567-k (no calcula si el digito verificador es correcto)
+    // misma regla que formatoRut en FormularioRegistrosViewModel de la app
     @Schema(description = "RUT del usuario", example = "22256967-2")
     @Size(max = 12)
     @NotBlank(message = "El rut es obligatorio")
+    @Pattern(regexp = "^(\\d{1,2}\\.\\d{3}\\.\\d{3}|\\d{7,8})-[0-9kK]$",
+            message = "Formato de RUT invalido (ej: 12345678-K o 12.345.678-K)")
     private String rut;
 
+    // el nombre no acepta numeros (misma regla que en la app)
     @Schema(description = "Nombre completo del usuario", example = "Manuel Mora")
     @Size(min = 10, max = 120)
     @NotBlank(message = "El nombre es obligatorio")
+    @Pattern(regexp = "^[^0-9]*$", message = "El nombre no debe contener numeros")
     private String nombre;
 
     @Schema(description = "Teléfono de contacto", example = "+56931214567")

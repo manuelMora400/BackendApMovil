@@ -28,6 +28,13 @@ public class UsuarioResponse {
     @Schema(description = "Estado de la cuenta", example = "true")
     private boolean activo;
 
+    // nuevo: la pantalla Perfil de la app muestra el cargo (solo clientes; en los demas roles va null)
+    @Schema(description = "Giro de la empresa (solo clientes)", example = "Agroindustria")
+    private String giro;
+
+    @Schema(description = "Cargo del contacto (solo clientes)", example = "Jefa de Mantenimiento")
+    private String contactoCargo;
+
     @Schema(description = "Clave temporal generada para el usuario", example = "********")
     private String claveTemporal;
 }

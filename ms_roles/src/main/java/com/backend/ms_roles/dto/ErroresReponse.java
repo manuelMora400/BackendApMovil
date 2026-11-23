@@ -2,6 +2,7 @@ package com.backend.ms_roles.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,10 @@ public class ErroresReponse {
 
     @Schema(description = "Ruta donde ocurrio el error", example = "/api/usuarios")
     private String ruta;
+
+    @JsonProperty("message")
+    @Schema(hidden = true)
+    public String getMessage() {
+        return mensaje;
+    }
 }
