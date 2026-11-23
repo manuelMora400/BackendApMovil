@@ -16,7 +16,7 @@ import com.example.ms_protocolo.dto.AislacionResponseDTO;
 import com.example.ms_protocolo.model.EnumDesvanado;
 import com.example.ms_protocolo.service.AislacionService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController 
