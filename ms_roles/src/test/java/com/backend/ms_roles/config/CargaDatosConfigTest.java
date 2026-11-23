@@ -20,7 +20,6 @@ import com.backend.ms_roles.model.Usuario;
 import com.backend.ms_roles.repository.RolRepository;
 import com.backend.ms_roles.repository.UsuarioRepository;
 
-// Prueba las semillas sin base de datos: repositories y encoder son mocks
 class CargaDatosConfigTest {
 
     @Test

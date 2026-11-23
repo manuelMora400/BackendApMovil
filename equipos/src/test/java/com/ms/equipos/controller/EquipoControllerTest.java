@@ -25,7 +25,6 @@ import com.ms.equipos.exception.RecursoNoEncontradoException;
 import com.ms.equipos.repository.EquipoRepository;
 import com.ms.equipos.service.EquipoService;
 
-// Tests del controller con MockMvc: prueban los codigos HTTP y el "message" de error (no necesita MySQL)
 @WebMvcTest(EquipoController.class)
 class EquipoControllerTest {
 
@@ -35,7 +34,6 @@ class EquipoControllerTest {
     @MockitoBean
     private EquipoService equipoService;
 
-    // por si se carga CargaDatosConfig (semillas): asi no necesita la base de datos
     @MockitoBean
     private EquipoRepository equipoRepository;
 

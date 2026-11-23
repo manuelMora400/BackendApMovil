@@ -35,7 +35,6 @@ import com.backend.ms_roles.repository.RolRepository;
 import com.backend.ms_roles.repository.UsuarioRepository;
 import com.backend.ms_roles.service.UsuarioServices;
 
-// Tests del controller con MockMvc: codigos HTTP y "message" de error (no necesita MySQL)
 @WebMvcTest(UsuarioController.class)
 class UsuarioControllerTest {
 
@@ -45,7 +44,6 @@ class UsuarioControllerTest {
     @MockitoBean
     private UsuarioServices services;
 
-    // por si se cargan las semillas (CargaDatosConfig): asi no necesita la base de datos
     @MockitoBean
     private UsuarioRepository usuarioRepository;
 
@@ -76,7 +74,6 @@ class UsuarioControllerTest {
         return u;
     }
 
-    // ---------- crear ----------
 
     @Test
     @DisplayName("POST /api/usuarios valido -> 201")
@@ -130,7 +127,6 @@ class UsuarioControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------- login ----------
 
     @Test
     @DisplayName("POST /api/usuarios/login correcto -> 200")
@@ -158,7 +154,6 @@ class UsuarioControllerTest {
                 .andExpect(jsonPath("$.message").value("Credenciales invalidas"));
     }
 
-    // ---------- listar, perfil, estado ----------
 
     @Test
     @DisplayName("GET /api/usuarios/listar -> 200")
@@ -212,7 +207,6 @@ class UsuarioControllerTest {
                 .andExpect(jsonPath("$.activo").value(false));
     }
 
-    // ---------- clave y perfil ----------
 
     @Test
     @DisplayName("PUT /api/usuarios/cambiarClave/{id} correcto -> 200")

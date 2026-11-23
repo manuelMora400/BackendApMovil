@@ -33,7 +33,6 @@ import com.ms.instrumentos.model.Instrumento;
 import com.ms.instrumentos.repository.CalibracionRepository;
 import com.ms.instrumentos.repository.InstrumentoRepository;
 
-// Tests unitarios del service: los repositories se simulan con Mockito (no necesita MySQL)
 @ExtendWith(MockitoExtension.class)
 class InstrumentoServiceTest {
 
@@ -67,7 +66,6 @@ class InstrumentoServiceTest {
         return r;
     }
 
-    // ---------- listar ----------
 
     @Test
     @DisplayName("listar calcula vigente con la ultima calibracion (vigente y vencido)")
@@ -97,7 +95,6 @@ class InstrumentoServiceTest {
         assertTrue(instrumentoService.listarInstrumentos().isEmpty());
     }
 
-    // ---------- registrar ----------
 
     @Test
     @DisplayName("registrar guarda instrumento y calibracion")
@@ -132,7 +129,6 @@ class InstrumentoServiceTest {
         verify(instrumentoRepository, never()).save(any());
     }
 
-    // ---------- contador y vigencia ----------
 
     @Test
     @DisplayName("contador devuelve la cantidad de instrumentos")
@@ -152,7 +148,7 @@ class InstrumentoServiceTest {
         VigenciaResponse v = instrumentoService.consultaVigencia(1L);
 
         assertEquals(1L, v.getIdInstrumento());
-        assertTrue(v.getVigente()); // vence hoy: todavia esta vigente
+        assertTrue(v.getVigente());
     }
 
     @Test
@@ -172,7 +168,6 @@ class InstrumentoServiceTest {
         assertThrows(RecursoNoEncontradoException.class, () -> instrumentoService.consultaVigencia(1L));
     }
 
-    // ---------- renovar calibracion ----------
 
     @Test
     @DisplayName("renovar agrega una calibracion nueva y queda vigente")

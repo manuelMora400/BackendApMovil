@@ -16,7 +16,6 @@ import com.ms.instrumentos.model.Instrumento;
 import com.ms.instrumentos.repository.CalibracionRepository;
 import com.ms.instrumentos.repository.InstrumentoRepository;
 
-// Prueba las semillas sin base de datos: los repositories son mocks
 class CargaDatosConfigTest {
 
     @Test

@@ -136,16 +136,12 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- JaCoCo: cobertura de tests (igual que ms_categoria de DevOps)
-			     mvn test   -> genera el reporte en target/site/jacoco/index.html
-			     mvn verify -> falla si la cobertura de lineas baja del 80% -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.15</version>
 				<configuration>
 					<excludes>
-						<!-- la clase main solo arranca Spring, no tiene logica -->
 						<exclude>**/*Application.class</exclude>
 					</excludes>
 				</configuration>

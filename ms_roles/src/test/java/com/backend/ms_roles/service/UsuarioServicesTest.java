@@ -40,7 +40,6 @@ import com.backend.ms_roles.model.Usuario;
 import com.backend.ms_roles.repository.RolRepository;
 import com.backend.ms_roles.repository.UsuarioRepository;
 
-// Tests unitarios del service: repositories y PasswordEncoder se simulan con Mockito (no necesita MySQL)
 @ExtendWith(MockitoExtension.class)
 class UsuarioServicesTest {
 
@@ -86,7 +85,6 @@ class UsuarioServicesTest {
         return r;
     }
 
-    // ================= login =================
 
     @Test
     @DisplayName("login correcto devuelve id, nombre, rol y si debe cambiar la clave")
@@ -138,7 +136,6 @@ class UsuarioServicesTest {
         assertThrows(CredencialesInvalidasException.class, () -> services.login(req));
     }
 
-    // ================= crear usuario =================
 
     @Test
     @DisplayName("crear cliente: guarda con clave temporal encriptada y debe cambiarla")
@@ -229,7 +226,6 @@ class UsuarioServicesTest {
                 () -> services.crearUsuario(crearRequest("GERENTE", null, null)));
     }
 
-    // ================= listar, perfil y estado =================
 
     @Test
     @DisplayName("listar convierte cada usuario a UsuarioResponse")
@@ -300,7 +296,6 @@ class UsuarioServicesTest {
         assertThrows(NoEncontradoException.class, () -> services.cambiarEstado(99L));
     }
 
-    // ================= cambiar clave =================
 
     @Test
     @DisplayName("cambiar clave correcto: guarda la nueva y ya no debe cambiarla")
@@ -401,7 +396,6 @@ class UsuarioServicesTest {
                 () -> services.cambiarClave(1L, claveRequest("Temp.12345", "Nueva1234", "Nueva1234")));
     }
 
-    // ================= actualizar perfil =================
 
     private ActualizarPerfilRequest perfilRequest(String correo) {
         ActualizarPerfilRequest r = new ActualizarPerfilRequest();
@@ -463,7 +457,6 @@ class UsuarioServicesTest {
         assertThrows(NoEncontradoException.class, () -> services.actualizarPerfil(99L, perfilRequest(null)));
     }
 
-    // ================= recuperar clave =================
 
     private RecuperarClaveRequest recuperar(String identificador) {
         RecuperarClaveRequest r = new RecuperarClaveRequest();

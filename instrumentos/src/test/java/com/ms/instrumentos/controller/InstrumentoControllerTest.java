@@ -31,7 +31,6 @@ import com.ms.instrumentos.repository.CalibracionRepository;
 import com.ms.instrumentos.repository.InstrumentoRepository;
 import com.ms.instrumentos.service.InstrumentoService;
 
-// Tests del controller con MockMvc: codigos HTTP y "message" de error (no necesita MySQL)
 @WebMvcTest(InstrumentoController.class)
 class InstrumentoControllerTest {
 

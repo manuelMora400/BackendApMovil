@@ -25,7 +25,6 @@ import com.ms.equipos.exception.RecursoNoEncontradoException;
 import com.ms.equipos.model.Equipo;
 import com.ms.equipos.repository.EquipoRepository;
 
-// Tests unitarios del service: el repository se simula con Mockito (no necesita MySQL)
 @ExtendWith(MockitoExtension.class)
 class EquipoServiceTest {
 

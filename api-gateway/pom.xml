@@ -18,13 +18,11 @@
 		<spring-cloud.version>2025.1.4</spring-cloud.version>
 	</properties>
 	<dependencies>
-		<!-- Gateway reactivo (WebFlux, servidor Netty), igual que el ejemplo de clase -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
 		</dependency>
 
-		<!-- para registrarse en Eureka y poder usar lb://nombre-del-servicio en las rutas -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>

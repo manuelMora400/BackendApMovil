@@ -15,7 +15,6 @@ import org.springframework.boot.CommandLineRunner;
 import com.ms.equipos.model.Equipo;
 import com.ms.equipos.repository.EquipoRepository;
 
-// Prueba las semillas sin base de datos: el repository es un mock
 class CargaDatosConfigTest {
 
     @Test
