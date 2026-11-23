@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ms.instrumentos.dto.ContadorResponse;
 import com.ms.instrumentos.dto.CrearInstrumentoRequest;
 import com.ms.instrumentos.dto.InstrumentoResponse;
+import com.ms.instrumentos.dto.RenovarCalibracionRequest;
 import com.ms.instrumentos.dto.VigenciaResponse;
 import com.ms.instrumentos.service.InstrumentoService;
 import jakarta.validation.Valid;
@@ -45,5 +46,13 @@ public class InstrumentoController {
     @GetMapping("/vigencia/{id}")
     public ResponseEntity<VigenciaResponse> vigencia(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(service.consultaVigencia(id));
+    }
+
+   
+    @PostMapping("/serie/{numeroSerie}/calibraciones")
+    public ResponseEntity<InstrumentoResponse> renovarCalibracion(
+            @PathVariable String numeroSerie,
+            @Valid @RequestBody RenovarCalibracionRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.renovarCalibracion(numeroSerie, request));
     }
 }
