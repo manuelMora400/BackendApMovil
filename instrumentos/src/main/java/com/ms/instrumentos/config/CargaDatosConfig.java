@@ -1,13 +1,18 @@
 package com.ms.instrumentos.config;
 
 import java.time.LocalDate;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.ms.instrumentos.model.Calibracion;
 import com.ms.instrumentos.model.Instrumento;
 import com.ms.instrumentos.repository.CalibracionRepository;
 import com.ms.instrumentos.repository.InstrumentoRepository;
 
+
+@Configuration
 public class CargaDatosConfig {
 
     @Bean
@@ -29,7 +34,6 @@ public class CargaDatosConfig {
                     "Medidor de relación (TTR)", "Megger", "TTR300", "TTR-30044",
                     LocalDate.of(2026, 6, 2), LocalDate.of(2027, 6, 2));
 
-           
             crearSiNoExiste(instrumentoRepository, calibracionRepository,
                     "Micro-ohmímetro", "Megger", "DLRO10X", "DLR-10882",
                     LocalDate.of(2025, 8, 20), LocalDate.of(2026, 8, 20));
