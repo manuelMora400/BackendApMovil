@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,7 +37,6 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 errores
         );
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -58,7 +58,22 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 errores
         );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDTO> manejarJsonInvalido(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request) {
+        log.warn("JSON inválido en ruta {}: {}", request.getRequestURI(), ex.getMessage());
+
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Cuerpo de la petición inválido",
+                request.getRequestURI(),
+                List.of("Revisa el formato del JSON y los valores permitidos")
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -91,7 +106,6 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 List.of(mensaje)
         );
-
         return ResponseEntity.status(status).body(response);
     }
 
@@ -108,7 +122,6 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 List.of("Ocurrió un error inesperado")
         );
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
