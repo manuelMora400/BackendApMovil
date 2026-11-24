@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
 
+import com.example.ms_protocolo.dto.CambiarEstadoRequestDTO;
 import com.example.ms_protocolo.dto.ProtocoloRequestDTO;
 import com.example.ms_protocolo.dto.ProtocoloResponseDTO;
 import com.example.ms_protocolo.model.EnumEstado;
 import com.example.ms_protocolo.service.ProtocoloService;
 import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 
 @RestController 
 @RequestMapping("/api/protocolos")
@@ -50,5 +53,14 @@ public class ProtocoloController {
     @GetMapping("/estado/{estado}/count")
     public ResponseEntity<Long> contarPorEstado(@PathVariable EnumEstado estado) {
         return ResponseEntity.ok(protocoloService.contarPorEstado(estado));
+    }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<ProtocoloResponseDTO> cambiarEstado(
+            @PathVariable Long id,
+            @Valid @RequestBody CambiarEstadoRequestDTO request) {
+        return protocoloService.cambiarEstado(id, request.getEstadoProtocolo())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
