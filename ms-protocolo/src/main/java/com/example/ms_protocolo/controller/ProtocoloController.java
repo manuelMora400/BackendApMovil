@@ -14,7 +14,7 @@ import com.example.ms_protocolo.dto.ProtocoloRequestDTO;
 import com.example.ms_protocolo.dto.ProtocoloResponseDTO;
 import com.example.ms_protocolo.model.EnumEstado;
 import com.example.ms_protocolo.service.ProtocoloService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 @RestController 
