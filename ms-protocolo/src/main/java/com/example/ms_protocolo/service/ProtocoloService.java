@@ -34,7 +34,7 @@ public class ProtocoloService {
         protocolo.setHumedad(dto.getHumedad());
         protocolo.setLatitud(dto.getLatitud());
         protocolo.setLongitud(dto.getLongitud());
-        protocolo.setEstadoProtocolo(dto.getEstadoProtocolo() != null ? dto.getEstadoProtocolo() : EnumEstado.APROBADO);
+        protocolo.setEstadoProtocolo(dto.getEstadoProtocolo() != null? dto.getEstadoProtocolo() : EnumEstado.PENDIENTE);
 
         Protocolo guardado = protocoloRepository.save(protocolo);
 
@@ -85,6 +85,18 @@ public class ProtocoloService {
         log.info("Contando protocolos con estado: {}", estado);
         return protocoloRepository.contarPorEstado(estado);
     }
+
+    @Transactional
+    public Optional<ProtocoloResponseDTO> cambiarEstado(
+            Long id, EnumEstado nuevoEstado) {
+        log.info("Cambiando estado del protocolo {} a {}", id, nuevoEstado);
+
+        return protocoloRepository.findById(id).map(protocolo -> {
+            protocolo.setEstadoProtocolo(nuevoEstado);
+            return mapearAResponse(protocoloRepository.save(protocolo));
+        });
+    }
+
 
     private ProtocoloResponseDTO mapearAResponse(Protocolo protocolo) {
         return new ProtocoloResponseDTO(
