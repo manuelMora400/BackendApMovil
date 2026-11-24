@@ -42,6 +42,7 @@ public class DataInitializer implements CommandLineRunner {
         Protocolo protocolo1Guardado = protocoloRepository.save(protocolo1);
 
         Aislacion prueba1 = new Aislacion();
+        prueba1.setId(1L);
         prueba1.setTag("TAG-TR-01");
         prueba1.setInstalacion("Subestación Norte");
         prueba1.setEnumDevanado(EnumDesvanado.BT_T);
