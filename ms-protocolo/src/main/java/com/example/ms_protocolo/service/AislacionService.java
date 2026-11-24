@@ -1,5 +1,6 @@
 package com.example.ms_protocolo.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -116,6 +117,10 @@ public class AislacionService {
         log.info("Total de pruebas encontradas con devanado {}: {}", devanado, pruebas.size());
 
         return pruebas;
+    }
+
+    public List<String> listarDevanados() {
+        return Arrays.stream(EnumDesvanado.values()).map(Enum::name).toList();
     }
 
     private AislacionResponseDTO mapearAResponse(Aislacion prueba) {

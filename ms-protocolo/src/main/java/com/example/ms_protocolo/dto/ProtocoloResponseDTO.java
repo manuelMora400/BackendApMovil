@@ -3,6 +3,7 @@ package com.example.ms_protocolo.dto;
 import java.time.LocalDateTime;
 
 import com.example.ms_protocolo.model.EnumEstado;
+import com.example.ms_protocolo.model.EnumResultado;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,15 @@ public class ProtocoloResponseDTO {
     @Schema(description = "Longitud geografica de la ubicacion de la prueba", example = "-70.6693")
     private Double longitud;
 
-    @Schema(description = "Estado actual del protocolo", example = "REGISTRADO_TERRENO")
+    @Schema(description = "Estado del protocolo: PENDIENTE o FORMALIZADO", example = "PENDIENTE")
     private EnumEstado estadoProtocolo;
+
+    @Schema(description = "Resultado de la prueba", example = "APROBADO")
+    private EnumResultado resultadoPrueba;
+
+    @Schema(description = "Id del tecnico que hizo la prueba", example = "3")
+    private Long idTecnico;
+
+    @Schema(description = "Id del instrumento usado", example = "1")
+    private Long idInstrumento;
 }

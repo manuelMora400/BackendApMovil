@@ -17,6 +17,7 @@ import com.example.ms_protocolo.model.EnumDesvanado;
 import com.example.ms_protocolo.service.AislacionService;
 
 import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController 
@@ -27,7 +28,7 @@ public class AislacionController {
     private final AislacionService aislacionService;
 
     @PostMapping
-    public ResponseEntity<AislacionResponseDTO> crear(@RequestBody AislacionRequestDTO request) {
+    public ResponseEntity<AislacionResponseDTO> crear(@Valid @RequestBody AislacionRequestDTO request) {
         return aislacionService.guardar(request)
                 .map(creada -> ResponseEntity.status(HttpStatus.CREATED).body(creada))
                 .orElse(ResponseEntity.notFound().build());
@@ -55,6 +56,11 @@ public class AislacionController {
     @GetMapping("/protocolo/{idProtocolo}")
     public ResponseEntity<List<AislacionResponseDTO>> buscarPorProtocolo(@PathVariable Long idProtocolo) {
         return ResponseEntity.ok(aislacionService.buscarPorProtocolo(idProtocolo));
+    }
+
+    @GetMapping("/devanados")
+    public ResponseEntity<List<String>> listarDevanados() {
+        return ResponseEntity.ok(aislacionService.listarDevanados());
     }
 
     @GetMapping("/devanado/{devanado}")

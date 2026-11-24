@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor 
 @NoArgsConstructor 
 @Entity
-@Table(name = "Protocolos")
+@Table(name = "protocolo")
 public class Protocolo {
     
     @Id
@@ -41,8 +41,16 @@ public class Protocolo {
     private Double longitud;
 
     @Enumerated (EnumType.STRING)
-    @Column(name = "estado_protocolo")
+    @Column(name = "estado_protocolo", columnDefinition = "varchar(20)")
     private EnumEstado estadoProtocolo;
 
+    @Enumerated (EnumType.STRING)
+    @Column(name = "resultado_prueba", columnDefinition = "varchar(20)")
+    private EnumResultado resultadoPrueba;
 
+    @Column(name = "id_tecnico")
+    private Long idTecnico;
+
+    @Column(name = "id_instrumento")
+    private Long idInstrumento;
 }

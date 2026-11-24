@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor 
 @NoArgsConstructor 
 @Entity 
-@Table(name = "Aislacion")
+@Table(name = "prueba_aislacion")
 public class Aislacion {
 
     @Id 
@@ -32,7 +32,7 @@ public class Aislacion {
     private String instalacion;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "enumDevanado")
+    @Column(name = "enumDevanado", columnDefinition = "varchar(10)")
     private EnumDesvanado enumDevanado;
 
     @Column (name = "tension")

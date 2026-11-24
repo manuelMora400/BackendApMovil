@@ -1,15 +1,19 @@
 package com.example.ms_protocolo.service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.ms_protocolo.client.InstrumentoClient;
 import com.example.ms_protocolo.dto.ProtocoloRequestDTO;
 import com.example.ms_protocolo.dto.ProtocoloResponseDTO;
+import com.example.ms_protocolo.dto.VigenciaResponse;
 import com.example.ms_protocolo.model.EnumEstado;
+import com.example.ms_protocolo.model.EnumResultado;
 import com.example.ms_protocolo.model.Protocolo;
 import com.example.ms_protocolo.repository.ProtocoloRepository;
 
@@ -23,10 +27,18 @@ import lombok.extern.slf4j.Slf4j;
 public class ProtocoloService {
 
     private final ProtocoloRepository protocoloRepository;
+    private final InstrumentoClient instrumentoClient;
 
-    @Transactional 
+    @Transactional
     public ProtocoloResponseDTO guardar(ProtocoloRequestDTO dto) {
         log.info("Creando protocolo con temperatura: {} y humedad: {}", dto.getTemperatura(), dto.getHumedad());
+
+        if (dto.getIdInstrumento() != null) {
+            VigenciaResponse vigencia = instrumentoClient.consultarVigencia(dto.getIdInstrumento());
+            if (vigencia == null || !vigencia.isVigente()) {
+                throw new RuntimeException("El instrumento tiene la calibracion vencida, no se puede registrar el protocolo");
+            }
+        }
 
         Protocolo protocolo = new Protocolo();
         protocolo.setFechaPrueba(dto.getFechaPrueba() != null ? dto.getFechaPrueba() : LocalDateTime.now());
@@ -34,7 +46,10 @@ public class ProtocoloService {
         protocolo.setHumedad(dto.getHumedad());
         protocolo.setLatitud(dto.getLatitud());
         protocolo.setLongitud(dto.getLongitud());
-        protocolo.setEstadoProtocolo(dto.getEstadoProtocolo() != null? dto.getEstadoProtocolo() : EnumEstado.PENDIENTE);
+        protocolo.setEstadoProtocolo(EnumEstado.PENDIENTE);
+        protocolo.setResultadoPrueba(dto.getResultadoPrueba());
+        protocolo.setIdTecnico(dto.getIdTecnico());
+        protocolo.setIdInstrumento(dto.getIdInstrumento());
 
         Protocolo guardado = protocoloRepository.save(protocolo);
 
@@ -86,6 +101,19 @@ public class ProtocoloService {
         return protocoloRepository.contarPorEstado(estado);
     }
 
+    public List<String> listarResultados() {
+        return Arrays.stream(EnumResultado.values()).map(Enum::name).toList();
+    }
+
+    public List<ProtocoloResponseDTO> buscarPorTecnico(Long idTecnico) {
+        log.info("Buscando protocolos del tecnico: {}", idTecnico);
+
+        return protocoloRepository.findByIdTecnicoOrderByFechaPruebaDesc(idTecnico)
+                .stream()
+                .map(this::mapearAResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public Optional<ProtocoloResponseDTO> cambiarEstado(
             Long id, EnumEstado nuevoEstado) {
@@ -106,7 +134,10 @@ public class ProtocoloService {
                 protocolo.getHumedad(),
                 protocolo.getLatitud(),
                 protocolo.getLongitud(),
-                protocolo.getEstadoProtocolo()
+                protocolo.getEstadoProtocolo(),
+                protocolo.getResultadoPrueba(),
+                protocolo.getIdTecnico(),
+                protocolo.getIdInstrumento()
         );
     }
 }

@@ -28,7 +28,7 @@ public class ProtocoloController {
     private final ProtocoloService protocoloService;
 
     @PostMapping
-    public ResponseEntity<ProtocoloResponseDTO> crear(@RequestBody ProtocoloRequestDTO request) {
+    public ResponseEntity<ProtocoloResponseDTO> crear(@Valid @RequestBody ProtocoloRequestDTO request) {
         ProtocoloResponseDTO creado = protocoloService.guardar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
@@ -53,6 +53,16 @@ public class ProtocoloController {
     @GetMapping("/estado/{estado}/count")
     public ResponseEntity<Long> contarPorEstado(@PathVariable EnumEstado estado) {
         return ResponseEntity.ok(protocoloService.contarPorEstado(estado));
+    }
+
+    @GetMapping("/resultados")
+    public ResponseEntity<List<String>> listarResultados() {
+        return ResponseEntity.ok(protocoloService.listarResultados());
+    }
+
+    @GetMapping("/tecnico/{idTecnico}")
+    public ResponseEntity<List<ProtocoloResponseDTO>> buscarPorTecnico(@PathVariable Long idTecnico) {
+        return ResponseEntity.ok(protocoloService.buscarPorTecnico(idTecnico));
     }
 
     @PutMapping("/{id}/estado")
