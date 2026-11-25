@@ -20,6 +20,8 @@ public interface ProtocoloRepository extends JpaRepository<Protocolo, Long> {
     @Query("SELECT COUNT(p) FROM Protocolo p WHERE p.estadoProtocolo = :estado")
     long contarPorEstado(@Param("estado") EnumEstado estado);
 
+    List<Protocolo> findByIdTecnicoOrderByFechaPruebaDesc(Long idTecnico);
+
     @Query("SELECT p FROM Protocolo p WHERE p.fechaPrueba BETWEEN :desde AND :hasta ORDER BY p.fechaPrueba DESC")
     List<Protocolo> buscarPorRangoFecha(
             @Param("desde") LocalDateTime desde,

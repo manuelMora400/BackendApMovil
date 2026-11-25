@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
 
+import com.example.ms_protocolo.dto.CambiarEstadoRequestDTO;
 import com.example.ms_protocolo.dto.ProtocoloRequestDTO;
 import com.example.ms_protocolo.dto.ProtocoloResponseDTO;
 import com.example.ms_protocolo.model.EnumEstado;
 import com.example.ms_protocolo.service.ProtocoloService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 
 @RestController 
 @RequestMapping("/api/protocolos")
@@ -25,7 +28,7 @@ public class ProtocoloController {
     private final ProtocoloService protocoloService;
 
     @PostMapping
-    public ResponseEntity<ProtocoloResponseDTO> crear(@RequestBody ProtocoloRequestDTO request) {
+    public ResponseEntity<ProtocoloResponseDTO> crear(@Valid @RequestBody ProtocoloRequestDTO request) {
         ProtocoloResponseDTO creado = protocoloService.guardar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
@@ -50,5 +53,24 @@ public class ProtocoloController {
     @GetMapping("/estado/{estado}/count")
     public ResponseEntity<Long> contarPorEstado(@PathVariable EnumEstado estado) {
         return ResponseEntity.ok(protocoloService.contarPorEstado(estado));
+    }
+
+    @GetMapping("/resultados")
+    public ResponseEntity<List<String>> listarResultados() {
+        return ResponseEntity.ok(protocoloService.listarResultados());
+    }
+
+    @GetMapping("/tecnico/{idTecnico}")
+    public ResponseEntity<List<ProtocoloResponseDTO>> buscarPorTecnico(@PathVariable Long idTecnico) {
+        return ResponseEntity.ok(protocoloService.buscarPorTecnico(idTecnico));
+    }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<ProtocoloResponseDTO> cambiarEstado(
+            @PathVariable Long id,
+            @Valid @RequestBody CambiarEstadoRequestDTO request) {
+        return protocoloService.cambiarEstado(id, request.getEstadoProtocolo())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

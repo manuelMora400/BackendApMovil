@@ -2,6 +2,8 @@ package com.example.ms_protocolo.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor 
 @NoArgsConstructor 
 @Entity 
-@Table(name = "Aislacion")
+@Table(name = "prueba_aislacion")
 public class Aislacion {
 
     @Id 
@@ -29,7 +31,8 @@ public class Aislacion {
     @Column (name = "instalacion")
     private String instalacion;
 
-    @Column (name = "enumDevanado")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "enumDevanado", columnDefinition = "varchar(10)")
     private EnumDesvanado enumDevanado;
 
     @Column (name = "tension")
