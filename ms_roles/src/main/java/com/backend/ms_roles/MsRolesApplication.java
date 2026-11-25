@@ -9,5 +9,4 @@ public class MsRolesApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MsRolesApplication.class, args);
 	}
-
 }
